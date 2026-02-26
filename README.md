@@ -5,7 +5,7 @@
 Scripts for annotating/predicting G-Quadruplexes (G4s) in a genome sequence, combining `pqsfinder` and `G4Hunter`. 
 This fork was created to run the `pqsfinder` tool in a Singularity container, which allows for a more flexible and portable execution environment, especially in high-performance computing (HPC) settings where Singularity is often preferred over Docker. 
 
-This specific version of the G4 Discovery Pipeline is designed to run on the Metacentrum HPC cluster, the user needs to have access to `/auto/praha5-elixir/projects/bioinf-fi` directory where the Singularity container for `pqsfinder` and environment for the G4 Discovery Pipeline are stored.
+This specific version of the G4 Discovery Pipeline is designed to run on the Metacentrum HPC cluster, the user needs to have access to `/auto/praha5-elixir/projects/bioinf-fi` directory where the Singularity container for `pqsfinder` and environment for the G4 Discovery Pipeline are stored. It can also be run outside of Metacentrum with some setup.
 
 
 ## Table of Contents
