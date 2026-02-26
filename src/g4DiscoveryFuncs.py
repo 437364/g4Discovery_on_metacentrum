@@ -4,22 +4,26 @@ import os
 import pandas as pd
 import re
 import subprocess
+from g4HunterFuncs import *
 
-def run_docker(input_file_path, output_file_path, output_file_name, pqs_min_score, container_name='kxk302/pqsfinder:1.0.0'):
+
+def run_singularity(input_file_path, output_file_path, output_file_name, pqs_min_score, container_path='/storage/praha5-elixir/projects/bioinf-fi/zvolenska/G4_Annotation/pqsfinder_1.0.0.sif'):
     '''
-    Run the pqsfinder Docker container with the specified input and output files.
+    Run the pqsfinder via Singularity with the specified input and output files.
     '''
     try:
         command = [
-            "docker", "run", 
-            "-v", f"{os.path.abspath(input_file_path)}:/input",  # Mount the input file
-            "-v", f"{os.path.abspath(output_file_path)}:/output",  # Mount the output file
-            container_name,  # Docker container name
+            "singularity", "run", 
+            "--bind", f"{os.path.abspath(input_file_path)}:/input",  # Mount the input file
+            "--bind", f"{os.path.abspath(output_file_path)}:/output",  # Mount the output file
+            "--pwd", "/",  # Set the working directory inside the container
+            container_path,  # Singularity container path
             "/input",  # Path to input file inside the container
             f"/output/{output_file_name}",  # Path to output file inside the container
             f"{pqs_min_score}",
             "1" #overlapping = True
         ]
+        print(f"Running command: {' '.join(command)}")
         result = subprocess.run(command, capture_output=True, text=True, check=True)
 
     except subprocess.CalledProcessError as e:
@@ -58,7 +62,7 @@ def filterG4s(fasta_file, chr, min_tetrad, min_score, min_g4hunterscore, pos_pat
         g4HunterScore = np.round(float(CalScore(BaseScore(sequence)[1],length)[0]),2) #G4 Hunter score calculation
 
         if nt >= min_tetrad and score >= min_score and regex != None and regex.span() == (0, len(sequence)) and abs(g4HunterScore) >= min_g4hunterscore:
-            choose.append([f"chr{chr}", start, end, score, length, strand, g4HunterScore])
+            choose.append([chr, start, end, score, length, strand, g4HunterScore])
 
     choose = pd.DataFrame(choose, columns=["chr","start", "end", "score", "length", "strand", "g4HunterScore"])
     return choose

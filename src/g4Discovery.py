@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument("-fa", "--fasta_file", type=str, required=True, 
                         help="Path to the input FASTA file")
     parser.add_argument("-chr", "--chromosome", type=str, required=True, 
-                        help="Chromosome identifier, either an integer or a single letter")
+                        help="Chromosome identifier, if it is a digit or single letter identifier, the program will add 'chr' prefix to match the convention for human genome FASTA files")
     parser.add_argument("-o", "--output", type=str, required=True, 
                         help="Path to the output BED file")
     parser.add_argument("-t", "--tetrad", type=int, default=3, required=False,
@@ -22,20 +22,22 @@ if __name__ == "__main__":
                         help="Minimum absolute G4Hunter score for a G4 to be considered")
     parser.add_argument("-psd", "--docker_min_pqsscore", type=str, required=False, default=30,
                         help="Minimum pqsfinder score for the docker to run")
+    parser.add_argument("-c", "--container_path", type=str, required=False, default='/storage/praha5-elixir/projects/bioinf-fi/zvolenska/G4_Annotation/pqsfinder_1.0.0.sif',
+                        help="Path to the Singularity container")
     args = parser.parse_args()
 
     input_file_path = args.fasta_file
     output_file_path = os.path.dirname(args.output)
     output_file_name = os.path.basename(args.fasta_file) + ".pqs"
 
-    print("Running Docker container: kxk302/pqsfinder:1.0.0")
-    run_docker(input_file_path, output_file_path, output_file_name, pqs_min_score=args.docker_min_pqsscore)
+    print(f"Running the pqsfinder Singularity container {args.container_path}")
+    run_singularity(input_file_path, output_file_path, output_file_name, pqs_min_score=args.docker_min_pqsscore, container_path=args.container_path)
 
     print(f'Using the following parameters: tetrad={args.tetrad}, pqsscore={args.pqsscore}, g4hunter={args.g4hunter}')
 
-    # Validate chr argument to ensure it is either an integer or a single letter
-    if not (args.chromosome.isdigit() or (len(args.chromosome) == 1 and args.chromosome.isalpha())):
-        parser.error("The -chr argument must be either an integer or a single letter.")
+    # If it is a single letter chromosome identifier, add "chr" prefix to match human genome FASTA files convention
+    if args.chromosome.isdigit() or (len(args.chromosome) == 1 and args.chromosome.isalpha()):
+        args.chromosome = f"chr{args.chromosome}"
 
     # Filter G4s
     filteredG4s = filterG4s(fasta_file=os.path.join(output_file_path, output_file_name), chr=args.chromosome, min_tetrad=args.tetrad, min_score=args.pqsscore, min_g4hunterscore=args.g4hunter)
