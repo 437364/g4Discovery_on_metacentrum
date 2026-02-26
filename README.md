@@ -53,6 +53,7 @@ Before using this package, ensure the following prerequisites are met:
    - Pass the path to your `.sif` file using the `-c` argument (see Usage).
 
 *For more information on the dockerized version of pqsfinder, please refer to the repository at: [kxk302/pqsfinder-docker](https://github.com/kxk302/PqsFinder_Docker)*
+
 3. **Python Environment**: 
 	- Ensure you have Python 3 installed, along with the required packages listed in `requirements.txt`. You can install them using pip: `pip install -r requirements.txt`
 
