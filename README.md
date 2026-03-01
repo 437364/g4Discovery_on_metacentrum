@@ -93,12 +93,22 @@ options:
 
 ### Example — MetaCentrum
 ```bash
+
+git clone -b singularity-port https://github.com/437364/g4Discovery_on_metacentrum.git 
+cd g4Discovery_on_metacentrum
+# or use the available script
+# cd /auto/praha5-elixir/projects/bioinf-fi/kratka/g4Discovery_on_metacentrum
+
 module add python/3.11.11-gcc-10.2.1-555dlyc
 source /auto/praha5-elixir/projects/bioinf-fi/kratka/g4_env/bin/activate
 python3 src/g4Discovery.py \
     -fa /path/to/sequence.fa \
     -chr 1 \
     -o /path/to/output.bed
+
+
+# or use the available script in /auto/praha5-elixir/projects/bioinf-fi/kratka/g4Discovery_on_metacentrum/src/g4Discovery.py
+
 ```
 
 ### Example — outside MetaCentrum
